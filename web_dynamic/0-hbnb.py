@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """
-This is module 10-hbnb_filters
-In this module we combine flask with sqlAlchemy for the first time
-Run this script from AirBnB_v2 directory for imports
+In this module we combine flask with sqlAlchemy to render a template.
+Run this script from AirBnB_clone_v4 directory for imports
 """
 from models import storage
 from models.base_model import Base
@@ -17,6 +16,7 @@ from models.review import Review
 from models.state import State
 from flask import Flask
 from flask import render_template
+import uuid
 app = Flask(__name__)
 
 
@@ -27,14 +27,17 @@ def hbnb():
     places_tmp = storage.all("Place").values()
     owners = storage.all("User")
     places = []
+    cache_id = uuid.uuid4();
+
     for k, v in owners.items():
         for place in places_tmp:
             if k == place.user_id:
                 places.append(["{} {}".format(
                     v.first_name, v.last_name), place])
     places.sort(key=lambda x: x[1].name)
-    return render_template("100-hbnb.html",
-                           amenities=amenities, result=states, places=places)
+    return render_template("0-hbnb.html",
+                           amenities=amenities, result=states, places=places,
+                           cache_id=cache_id)
 
 
 @app.teardown_appcontext
